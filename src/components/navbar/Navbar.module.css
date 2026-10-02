@@ -1,0 +1,27 @@
+.header {
+  width: 100%;
+  background-color: aliceblue;
+  padding: 0 25;
+}
+
+.navbarContainer {
+  display: flex;
+  padding: 25px;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 80px;
+}
+
+.navbarMenu {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.navbarLogo {
+  display: flex;
+  align-items: flex-start;
+  font-size: 16px;
+  color: rgb(6, 6, 65);
+  font-weight: 700;
+}
