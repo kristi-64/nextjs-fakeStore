@@ -7,54 +7,58 @@ import { useState, useEffect } from "react";
 import ProductItem from "@/components/ProductItem";
 
 export default function Home() {
-  const [products, setProducts] = useState([]);
-
-  const [loading, setLoading] = useState(true);
-
-  const [error, setError] = useState(false);
+  const [products, setProducts] = useState(null);
+  const [deletedProducts, setDeletedProducts] = useState([]);
 
   useEffect(() => {
-    setLoading(true);
-
-    setError(false);
-
-    fetch("https://fakestoreapi.com/products")
+    fetch("https://dummyjson.com/products")
       .then((response) => {
         if (!response.ok) {
-          throw new Error("შეცდომა მონაცემების წამოღებისას");
+          throw new Error("სერვერიდან მონაცემები ვერ წამოვიდა");
         }
-
         return response.json();
       })
-
-      .then((result) => {
-        setProducts(result);
-
-        setLoading(false);
-      })
-
-      .catch((err) => {
-        console.error(err);
-
-        setError(true);
-
-        setLoading(false);
+      .then((result) => setProducts(result.products))
+      .catch((error) => {
+        console.error("Fetch error:", error);
+        alert("შეცდომაა: " + error.message);
       });
   }, []);
 
-  if (loading) {
-    return <h2>იტვირთება...</h2>;
-  }
+  const handleDelete = (id) => {
+    const targetProducts = products.find((item) => item.id == id);
 
-  if (error) {
-    return <h2>შეცდომა</h2>;
+    if (targetProducts) {
+      setDeletedProducts([...deletedProducts, targetProducts]);
+
+      const updatedProducts = products.filter((item) => item.id !== id);
+      setProducts(updatedProducts);
+    }
+  };
+
+  if (products === null) {
+    return <div>Loading...</div>;
   }
 
   return (
     <div className={styles.page}>
-      {products?.map((item) => (
-        <ProductItem key={item.id} product={item} />
-      ))}
+      <h1>პროდუქტების სია ({products.length})</h1>
+      <div style={{ display: "grid", gap: "16px", marginBottom: "40px" }}>
+        {products.map((item) => (
+          <ProductItem key={item.id} product={item} onDelete={handleDelete} />
+        ))}
+      </div>
+
+      {deletedProducts.length > 0 && (
+        <div style={{ borderTop: "2px red dashed", paddingTop: "20px" }}>
+          <h2>წაშლილი პროდუქტები ({deletedProducts.length})</h2>
+          <div style={{ display: "grid", gap: "16px" }}>
+            {deletedProducts.map((item) => (
+              <ProductItem key={item.id} product={item} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

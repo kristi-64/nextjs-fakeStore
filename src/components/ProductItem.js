@@ -1,23 +1,30 @@
-export default function ProductItem({ product }) {
-  const cardStyle = {
-    border: "1px solid #ccc",
-    padding: "16px",
-    borderRadius: "8px",
-    textAlign: "center",
-  };
+import styles from "./ProductItem.module.css";
 
-  const imageStyle = {
-    width: "100px",
-    height: "100px",
-    objectFit: "contain",
-  };
-
+export default function ProductItem({ product, onDelete }) {
   return (
-    <div style={cardStyle}>
-      <img src={product.image} alt={product.title} style={imageStyle} />
-      <h3>{product.title}</h3>
-      <h2> ${product.price}</h2>
-      <p>{product.description}</p>
+    <div className={styles.card}>
+      <div className={styles.imageWrapper}>
+        <img
+          src={product.thumbnail || product.image}
+          alt={product.title}
+          className={styles.image}
+        />
+      </div>
+
+      <div className={styles.content}>
+        <h3 className={styles.title}>{product.title}</h3>
+        <div className={styles.price}>${product.price}</div>
+        <p className={styles.description}>{product.description}</p>
+      </div>
+
+      {onDelete && (
+        <button
+          onClick={() => onDelete(product.id)}
+          className={styles.deleteBtn}
+        >
+          Delete
+        </button>
+      )}
     </div>
   );
 }
